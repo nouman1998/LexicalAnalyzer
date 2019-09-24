@@ -28,7 +28,7 @@ namespace LexicalAnalyzer
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string a="";
+            string a = "";
             string[] abc = new string[1000];
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             openFileDialog1.InitialDirectory = @"C:\Users\DevOps\Desktop\";
@@ -38,13 +38,26 @@ namespace LexicalAnalyzer
             DialogResult result = openFileDialog1.ShowDialog();
             if (result == DialogResult.OK)
             {
-             a = System.IO.File.ReadAllText(openFileDialog1.FileName);
+                //a = System.IO.File.ReadAllText(openFileDialog1.FileName);
+                using (StreamReader reader = new StreamReader(openFileDialog1.FileName))
+                {
+                    while (true)
+                    {
+                        string line = reader.ReadLine();
+                        if (line == null)
+                        {
+                            break;
+                        }
+                        a += line;
+                        a += '\r'.ToString()+'\n'.ToString();
+                    }
+                }
+                textBox1.Text = a;
+                //foreach (var item in abc)
+                //{
+                //    textBox1.AppendText(item);
+                //}
             }
-            textBox1.Text = a;
-            //foreach (var item in abc)
-            //{
-            //    textBox1.AppendText(item);
-            //}
         }
         public int  lineNumber = 1, wordNumber = 1;
         public string temp = "", testString;
@@ -111,12 +124,12 @@ namespace LexicalAnalyzer
                                     addToList(temp);
                                     //flag++;
                                 }
-                               
+
 
 
                                 while (isComment)
                                 {
-                                    
+
                                     if (c == 10 || (i + 1) == source.Length)
                                     {
                                         isComment = false;
@@ -131,13 +144,13 @@ namespace LexicalAnalyzer
                                         continue;
 
                                     }
-                                  
+
                                     i++;
                                     c = source[i];
                                 }
 
                             }
-                           else if (testString == "/*")
+                            else if (testString == "/*")
                             {
                                 isComment = true;
                                 if (temp != "")
@@ -145,7 +158,7 @@ namespace LexicalAnalyzer
                                     addToList(temp);
                                     //flag++;
                                 }
-                                
+
                                 while (isComment)
                                 {
                                     //c = source[i];
@@ -158,9 +171,9 @@ namespace LexicalAnalyzer
                                     if (testString == "*/")
                                     {
                                         i = i + 2;
-                                            c = source[i];
+                                        c = source[i];
                                         isComment = false;
-                                        
+
                                         continue;
                                     }
                                     i++;
@@ -177,19 +190,22 @@ namespace LexicalAnalyzer
 
 
                         }
+                        else {
+                            addToList(c);
+                            if (i == source.Length)
+                            {
+                                goto end;
+                            }
+                            else
+                            {
+                                i++;
+                                goto end;
+                            }
 
-                        if (i == source.Length)
-                        {
-                            goto end;
-                        }
-                        else
-                        {
-                            goto start;
+
                         }
 
                     }
-                   
-
 
                 }
                 if (temp == "")
